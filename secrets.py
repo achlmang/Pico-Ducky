@@ -1,0 +1,1 @@
+secrets = { 'ssid' : "Home_Net", 'password' : "123456789" }
